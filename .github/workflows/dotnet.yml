@@ -1,0 +1,35 @@
+name: .NET Core CI/CD
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    name: Build and Test
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. Checkout the repository code
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    # 2. Setup the .NET SDK environment
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x' # Change to '9.0.x', '6.0.x', etc., depending on your project
+
+    # 3. Restore NuGet packages
+    - name: Restore Dependencies
+      run: dotnet restore
+
+    # 4. Build the project in Release mode without re-restoring
+    - name: Build Application
+      run: dotnet build --configuration Release --no-restore
+
+    # 5. Run unit tests
+    - name: Run Tests
+      run: dotnet test --configuration Release --no-restore --verbosity normal
